@@ -1,0 +1,38 @@
+{
+  "name": "polling-app-backend",
+  "version": "1.0.0",
+  "description": "Polling app cloning project/task for our first class of SMIT Bootcamp 2026",
+  "keywords": [
+    "Poll"
+  ],
+  "homepage": "https://github.com/habilaris/Polling-App---Backend#readme",
+  "bugs": {
+    "url": "https://github.com/habilaris/Polling-App---Backend/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/habilaris/Polling-App---Backend.git"
+  },
+  "license": "ISC",
+  "author": "Habil Aris",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.8.1",
+    "multer": "^2.2.0",
+    "nodemailer": "^9.0.3"
+  }
+}
