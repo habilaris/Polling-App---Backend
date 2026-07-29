@@ -106,6 +106,164 @@ export const verifyOtp = async (req, res) => {
 };
 
 // To Resend OTP
-// export const resendOtp = ()=>{
+export const resendOtp = async (req, res) => {
+  try {
+    const user = await User.findone({email: req.body.email});
+    if(!user){
+      return res.status(404).json({
+        message: "User not found"
+      })
+    }
 
-// }
+    user.otp = generateOtp();
+    user.otpExpiry = otpExpiry();
+
+
+    await user.save();
+    await sendOtpEmail(user.email, user.otp, "Verify your Polify Account!");
+    res.json({
+      message: "OTP Sent"
+    })
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    })
+  }
+}
+
+// Login User
+const login = async (req, res)=>{
+  try {
+    const {email, password} = req.body;
+    const user = await User.findOne({email});
+
+    if (!user || !(await user.comparePassword(password))) {
+      return res.status(401).json({
+        message: "Invalid email or password"
+      })
+    }
+    if (!user.isVerified) {
+      return res.status(403).json({
+        message: "Please verify your email first", needsVerification: true, email
+      })
+    }
+
+    res.json({
+      token: generateToken(user._id), 
+      user: clean(user)
+    })
+
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    })
+  }
+}
+
+// To Update your profile
+export const updateProfile = async (req, res) => {
+  try {
+    const { name, username, bio } = req.body;
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (username && username !== user.username) {
+      const taken = await User.findOne({ username });
+      if (taken) return res.status(400).json({ message: "Username already taken" });
+      user.username = username;
+    }
+    if (name) user.name = name;
+    if (bio !== undefined) user.bio = bio;
+    if (req.file) {
+      try { user.avatar = await uploadToCloudinary(req.file.buffer); }
+      catch (e) { console.warn("Avatar upload skipped:", e.message); }
+    }
+    await user.save();
+    res.json({ user: clean(user) });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
+// To change your password
+export const changepassword = async (req, res )=>{
+  try {
+    const {userId, currentPassword, newPassword} = req.body;
+    if (!newPassword || newPassword < 6) {
+      return res.status(400).json({
+        message: "Password must be atleast 6 characters"
+      })
+    }
+
+    const user = User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found"
+      })
+    }
+
+    if(!(await comparePassword(currentPassword))){
+      return res.status(400).json({
+        message: "Current Password is incorrect"
+      })
+    }
+
+    user.password = newPassword;
+    await user.save();
+    res.json({
+      message: "Password updated"
+    })
+
+  } catch (error) {
+      return res.status(500).json({
+        message: error.message
+      })
+  }
+}
+
+// to delete an account
+export const deleteAccount = async (req, res) => {
+  try {
+    const id = req.userId
+    const myPolls = await Poll.find({creator: id}).select("_id")
+    const pollIds = myPolls.map((poll)=>poll._id)
+    
+    await Comment.deleteMany({ $or: [{user: id}, {poll: { $in: pollIds }}] })
+    await Poll.deleteMany({ creator: id });
+    await Poll.updateMany( {}, { $pull: { votes: { user: id } } } ); 
+    await User.findByIdAndDelete(id);
+
+    res.json({ message: "Account Deleted" })
+  } catch (err) {
+    return res.status(500).json({ message: err.message})
+  }
+}
+
+// To get logged in user profile
+export const getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.body.userId)
+    if (!user) {
+      return res.status(404).json({ message: "User not found" })
+    }
+
+    const [created, voted] = await Promise.all([
+      Poll.countDocuments({ creator: user._id }),
+      Poll.countDocuments({ "votes.user": user._id })
+    ]);
+
+    res.json({
+      user: clean(user),
+      stats: {
+        created,
+        voted,
+        bookmarked: user.bookmarks.length
+      }
+    })
+
+  }
+  catch(err){
+    return res.status(500).json({ message: err.message})
+  }
+}
