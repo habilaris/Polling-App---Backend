@@ -3,9 +3,13 @@ import mongoose from "mongoose";
 import connectToDB from "./config/connectToDB.js";
 import routes from "./app.js";
 import dotenv from "dotenv";
+import cors from "cors";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
+
+// MIDDlEWARES
+app.use(cors());
 
 // DB CONNECTION
 connectToDB();

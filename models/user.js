@@ -41,12 +41,12 @@ const userSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-userSchema.pre("save", async (next) => {
+userSchema.pre("save", async () => {
   // In this situation we are only hashing the passwords that are not hashed (e.g., In cases of new user creation or password changing afterwards ), we do this so we dont hash the password more than once.
 
   // if password is not modified, we don't need to hash it again, so we can just call next() and move on.
   if (!this.isModified("password")) {
-    return next();
+    return;
   }
   // otherwise, we will hash the password and then call next() to move on.
   else {
