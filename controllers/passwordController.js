@@ -1,6 +1,6 @@
-import User from "../models/user";
-import { generateOtp, otpExpiry } from "../utils/otp";
-import { sendOtpEmail } from "../config/mailer";
+import User from "../models/user.js";
+import { generateOtp, otpExpiry } from "../utils/otp.js";
+import { sendOtpEmail } from "../config/mailer.js";
 
 // If the user forgot the password send an OTP email
 export const forgotPassword = async (req, res) => {

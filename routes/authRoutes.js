@@ -8,10 +8,10 @@ import {
   resendOtp,
   updateProfile,
   verifyOtp,
+  login,
 } from "../controllers/authController.js";
 import {
   forgotPassword,
-  resetOtp,
   resetPassword,
   verifyResetOtp,
 } from "../controllers/passwordController.js";

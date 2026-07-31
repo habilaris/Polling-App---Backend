@@ -63,5 +63,7 @@ userSchema.methods.comparePassword = async function (plainPassword) {
   return await bcrypt.compare(plainPassword, this.password);
 };
 
-const User = mongoose.model("User", userSchema);
+// Importing User.js in multiple js files can cause mongoose to register User model more than once
+// Which is why, we'll see if it has been already registered, otherwise register.
+const User = mongoose.models.User || mongoose.model("User", userSchema);
 export default User;

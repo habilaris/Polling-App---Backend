@@ -12,16 +12,16 @@ const generateToken = (id) => {
 };
 
 const clean = (u) => ({
-    _id = u.id,
-    name = u.name,
-    email = u.email,
-    username = u.username,
-    avatar = u.avatar,
-    bio = u.bio,
-})
+  _id: u.id,
+  name: u.name,
+  email: u.email,
+  username: u.username,
+  avatar: u.avatar,
+  bio: u.bio,
+});
 
 // Register a new user and send a verification otp on the email of the user
-export const registerUser = async (req, res) => {
+export const register = async (req, res) => {
   try {
     const { name, username, email, password } = req.body;
     if (!name || !username || !email || !password) {
@@ -95,70 +95,70 @@ export const verifyOtp = async (req, res) => {
 
     // Now to generate token
     res.json({
-        token: generateToken(user._id),
-        user: clean(user)
-    })
+      token: generateToken(user._id),
+      user: clean(user),
+    });
   } catch (err) {
     res.status(500).json({
-        message: err.message
-    })
+      message: err.message,
+    });
   }
 };
 
 // To Resend OTP
 export const resendOtp = async (req, res) => {
   try {
-    const user = await User.findone({email: req.body.email});
-    if(!user){
+    const user = await User.findone({ email: req.body.email });
+    if (!user) {
       return res.status(404).json({
-        message: "User not found"
-      })
+        message: "User not found",
+      });
     }
 
     user.otp = generateOtp();
     user.otpExpiry = otpExpiry();
 
-
     await user.save();
     await sendOtpEmail(user.email, user.otp, "Verify your Polify Account!");
     res.json({
-      message: "OTP Sent"
-    })
+      message: "OTP Sent",
+    });
   } catch (error) {
     res.status(500).json({
-      message: error.message
-    })
+      message: error.message,
+    });
   }
-}
+};
 
 // Login User
-const login = async (req, res)=>{
+export const login = async (req, res) => {
   try {
-    const {email, password} = req.body;
-    const user = await User.findOne({email});
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
 
     if (!user || !(await user.comparePassword(password))) {
       return res.status(401).json({
-        message: "Invalid email or password"
-      })
+        message: "Invalid email or password",
+      });
     }
     if (!user.isVerified) {
       return res.status(403).json({
-        message: "Please verify your email first", needsVerification: true, email
-      })
+        message: "Please verify your email first",
+        needsVerification: true,
+        email,
+      });
     }
 
     res.json({
-      token: generateToken(user._id), 
-      user: clean(user)
-    })
-
+      token: generateToken(user._id),
+      user: clean(user),
+    });
   } catch (error) {
     res.status(500).json({
-      message: error.message
-    })
+      message: error.message,
+    });
   }
-}
+};
 
 // To Update your profile
 export const updateProfile = async (req, res) => {
@@ -169,14 +169,18 @@ export const updateProfile = async (req, res) => {
 
     if (username && username !== user.username) {
       const taken = await User.findOne({ username });
-      if (taken) return res.status(400).json({ message: "Username already taken" });
+      if (taken)
+        return res.status(400).json({ message: "Username already taken" });
       user.username = username;
     }
     if (name) user.name = name;
     if (bio !== undefined) user.bio = bio;
     if (req.file) {
-      try { user.avatar = await uploadToCloudinary(req.file.buffer); }
-      catch (e) { console.warn("Avatar upload skipped:", e.message); }
+      try {
+        user.avatar = await uploadToCloudinary(req.file.buffer);
+      } catch (e) {
+        console.warn("Avatar upload skipped:", e.message);
+      }
     }
     await user.save();
     res.json({ user: clean(user) });
@@ -185,72 +189,72 @@ export const updateProfile = async (req, res) => {
   }
 };
 
-
 // To change your password
-export const changepassword = async (req, res )=>{
+export const changepassword = async (req, res) => {
   try {
-    const {userId, currentPassword, newPassword} = req.body;
+    const { userId, currentPassword, newPassword } = req.body;
     if (!newPassword || newPassword < 6) {
       return res.status(400).json({
-        message: "Password must be atleast 6 characters"
-      })
+        message: "Password must be atleast 6 characters",
+      });
     }
 
     const user = User.findById(userId);
     if (!user) {
       return res.status(404).json({
-        message: "User not found"
-      })
+        message: "User not found",
+      });
     }
 
-    if(!(await comparePassword(currentPassword))){
+    if (!(await comparePassword(currentPassword))) {
       return res.status(400).json({
-        message: "Current Password is incorrect"
-      })
+        message: "Current Password is incorrect",
+      });
     }
 
     user.password = newPassword;
     await user.save();
     res.json({
-      message: "Password updated"
-    })
-
+      message: "Password updated",
+    });
   } catch (error) {
-      return res.status(500).json({
-        message: error.message
-      })
+    return res.status(500).json({
+      message: error.message,
+    });
   }
-}
+};
 
 // to delete an account
 export const deleteAccount = async (req, res) => {
   try {
-    const id = req.userId
-    const myPolls = await Poll.find({creator: id}).select("_id")
-    const pollIds = myPolls.map((poll)=>poll._id)
-    
-    await Comment.deleteMany({ $or: [{user: id}, {poll: { $in: pollIds }}] })
+    const id = req.userId;
+    const myPolls = await Poll.find({ creator: id }).select("_id");
+    const pollIds = myPolls.map((poll) => poll._id);
+
+    await Comment.deleteMany({
+      $or: [{ user: id }, { poll: { $in: pollIds } }],
+    });
     await Poll.deleteMany({ creator: id });
-    await Poll.updateMany( {}, { $pull: { votes: { user: id } } } ); 
+    await Poll.updateMany({}, { $pull: { votes: { user: id } } });
     await User.findByIdAndDelete(id);
 
-    res.json({ message: "Account Deleted" })
+    res.json({ message: "Account Deleted" });
   } catch (err) {
-    return res.status(500).json({ message: err.message})
+    return res.status(500).json({ message: err.message });
   }
-}
+};
 
 // To get logged in user profile
 export const getMe = async (req, res) => {
   try {
-    const user = await User.findById(req.body.userId)
+    const user = await User.findById(req.body.userId);
     if (!user) {
-      return res.status(404).json({ message: "User not found" })
+      return res.status(404).json({ message: "User not found" });
     }
 
     const [created, voted] = await Promise.all([
       Poll.countDocuments({ creator: user._id }),
-      Poll.countDocuments({ "votes.user": user._id })
+      Poll.countDocuments({ "votes.user": user._id }),
     ]);
 
     res.json({
@@ -258,12 +262,10 @@ export const getMe = async (req, res) => {
       stats: {
         created,
         voted,
-        bookmarked: user.bookmarks.length
-      }
-    })
-
+        bookmarked: user.bookmarks.length,
+      },
+    });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
   }
-  catch(err){
-    return res.status(500).json({ message: err.message})
-  }
-}
+};
