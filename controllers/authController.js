@@ -198,23 +198,29 @@ export const updateProfile = async (req, res) => {
 };
 
 // To change your password
-export const changepassword = async (req, res) => {
+export const changePassword = async (req, res) => {
   try {
-    const { userId, currentPassword, newPassword } = req.body;
-    if (!newPassword || newPassword < 6) {
+    const userId = req.userId;
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword) {
+      return res.status(400).json({ message: "Current password is required" });
+    }
+
+    if (!newPassword || newPassword.length < 6) {
       return res.status(400).json({
         message: "Password must be atleast 6 characters",
       });
     }
 
-    const user = User.findById(userId);
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({
         message: "User not found",
       });
     }
 
-    if (!(await comparePassword(currentPassword))) {
+    if (!(await user.comparePassword(currentPassword))) {
       return res.status(400).json({
         message: "Current Password is incorrect",
       });
@@ -255,7 +261,7 @@ export const deleteAccount = async (req, res) => {
 // To get logged in user profile
 export const getMe = async (req, res) => {
   try {
-    // 👈 Use req.userId attached from protect middleware
+    // Use req.userId attached from protect middleware
     const user = await User.findById(req.userId);
 
     if (!user) {

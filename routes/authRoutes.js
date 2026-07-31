@@ -1,7 +1,7 @@
 import express from "express";
 import { upload } from "../config/cloudinary.js";
 import {
-  changepassword,
+  changePassword,
   deleteAccount,
   getMe,
   register,
@@ -37,7 +37,7 @@ authRouter.post("/reset-password", resetPassword);
 
 authRouter.patch("/profile", protect, upload.single("image"), updateProfile);
 
-authRouter.patch("/password", protect, changepassword);
+authRouter.patch("/password", protect, changePassword);
 authRouter.delete("/account", protect, deleteAccount);
 
 export default authRouter;
