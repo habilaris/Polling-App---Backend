@@ -4,6 +4,7 @@ import Comment from "../models/comment.js";
 import nodemailer from "nodemailer";
 import { uploadToCloudinary } from "../config/cloudinary.js";
 import { generateOtp, otpExpiry, otpValid } from "../utils/otp.js";
+import { sendOtpEmail } from "../config/mailer.js";
 import jwt from "jsonwebtoken";
 
 // Generate Token Function
@@ -77,11 +78,18 @@ export const register = async (req, res) => {
 export const verifyOtp = async (req, res) => {
   try {
     const { email, otp } = req.body;
-    const user = User.findOne({ email });
+    const user = await User.findOne({ email });
     if (!user)
       return res.status(404).json({
         message: "User not found",
       });
+
+    // For Debugging Purposes
+    // console.log("Entire User Object from DB:", user);
+    // console.log("DB OTP:", user.otp, "Type:", typeof user.otp);
+    // console.log("Input OTP:", otp, "Type:", typeof otp);
+    // console.log("Expiry Time:", new Date(user.otpExpiry).getTime());
+    // console.log("Current Time:", Date.now());
 
     if (!user.isVerified && !otpValid(user, otp))
       return res.status(400).json({
@@ -108,7 +116,7 @@ export const verifyOtp = async (req, res) => {
 // To Resend OTP
 export const resendOtp = async (req, res) => {
   try {
-    const user = await User.findone({ email: req.body.email });
+    const user = await User.findOne({ email: req.body.email });
     if (!user) {
       return res.status(404).json({
         message: "User not found",

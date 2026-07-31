@@ -20,7 +20,12 @@ import { protect } from "../middleware/auth.js";
 
 const authRouter = express.Router();
 
-authRouter.post("register", upload.single("image"), register);
+// Test route
+authRouter.get("/", (req, res) => {
+  res.send("Welcome to api/auth/");
+});
+
+authRouter.post("/register", upload.single("image"), register);
 authRouter.post("/verify-otp", verifyOtp);
 authRouter.post("/resend-otp", resendOtp);
 

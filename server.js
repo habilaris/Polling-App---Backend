@@ -4,12 +4,14 @@ import connectToDB from "./config/connectToDB.js";
 import routes from "./app.js";
 import dotenv from "dotenv";
 import cors from "cors";
+import logger from "./middleware/logger.js";
 
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 3000;
 
 // MIDDlEWARES
 app.use(cors());
+app.use(logger);
 
 // DB CONNECTION
 connectToDB();
