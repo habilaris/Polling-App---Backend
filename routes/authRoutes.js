@@ -28,14 +28,14 @@ authRouter.get("/", (req, res) => {
 authRouter.post("/register", upload.single("image"), register);
 authRouter.post("/verify-otp", verifyOtp);
 authRouter.post("/resend-otp", resendOtp);
-
 authRouter.post("/login", login);
+authRouter.get("/me", protect, getMe);
+
 authRouter.post("/forgot-password", forgotPassword);
 authRouter.post("/verify-reset-otp", verifyResetOtp);
-
 authRouter.post("/reset-password", resetPassword);
-authRouter.get("/me", protect, getMe);
-authRouter.patch("profile", protect, upload.single("image"), updateProfile);
+
+authRouter.patch("/profile", protect, upload.single("image"), updateProfile);
 
 authRouter.patch("/password", protect, changepassword);
 authRouter.delete("/account", protect, deleteAccount);

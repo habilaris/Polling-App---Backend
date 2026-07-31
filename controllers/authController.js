@@ -7,9 +7,9 @@ import { generateOtp, otpExpiry, otpValid } from "../utils/otp.js";
 import { sendOtpEmail } from "../config/mailer.js";
 import jwt from "jsonwebtoken";
 
-// Generate Token Function
+// Generate Token
 const generateToken = (id) => {
-  jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
 const clean = (u) => ({
@@ -255,7 +255,9 @@ export const deleteAccount = async (req, res) => {
 // To get logged in user profile
 export const getMe = async (req, res) => {
   try {
-    const user = await User.findById(req.body.userId);
+    // 👈 Use req.userId attached from protect middleware
+    const user = await User.findById(req.userId);
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
