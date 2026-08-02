@@ -9,7 +9,8 @@ import jwt from "jsonwebtoken";
 
 // Generate Token
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+  const jwtSecret = process.env.JWT_SECRET || "pollify-dev-secret-change-me";
+  return jwt.sign({ id }, jwtSecret, { expiresIn: "7d" });
 };
 
 const clean = (u) => ({

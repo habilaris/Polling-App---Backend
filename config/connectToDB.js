@@ -8,6 +8,13 @@ const connectToDB = async () => {
     return;
   }
 
+  if (!process.env.DB_URL) {
+    console.warn(
+      "DB_URL is not configured. Database-backed routes will return errors until it is set.",
+    );
+    return;
+  }
+
   try {
     await mongoose.connect(process.env.DB_URL, {
       serverSelectionTimeoutMS: 10000,
@@ -18,7 +25,6 @@ const connectToDB = async () => {
     if (!process.env.VERCEL) {
       process.exit(1);
     }
-    throw error;
   }
 };
 
