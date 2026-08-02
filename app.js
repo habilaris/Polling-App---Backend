@@ -1,6 +1,7 @@
 import express from "express";
 import User from "./models/User.js";
 import authRouter from "./routes/authRoutes.js";
+import notificationRouter from "./routes/notificationRoutes.js";
 
 const router = express.Router();
 
@@ -13,5 +14,6 @@ router.get("/", (req, res) => {
 });
 
 router.use("/auth", authRouter);
+router.use("/notifications", notificationRouter);
 
 export default router;
