@@ -185,9 +185,16 @@ export const updateProfile = async (req, res) => {
     if (bio !== undefined) user.bio = bio;
     if (req.file) {
       try {
-        user.avatar = await uploadToCloudinary(req.file.buffer);
+        const cloudinaryUrl = await uploadToCloudinary(req.file.buffer);
+        if (cloudinaryUrl) {
+          user.avatar = cloudinaryUrl;
+        }
       } catch (e) {
-        console.warn("Avatar upload skipped:", e.message);
+        console.error("Cloudinary upload failed:", e.message);
+        return res.status(500).json({
+          message: "Failed to upload avatar image",
+          error: e.message,
+        });
       }
     }
     await user.save();

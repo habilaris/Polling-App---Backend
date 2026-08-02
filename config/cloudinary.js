@@ -12,7 +12,7 @@ export const upload = multer({ storage: multer.memoryStorage() });
 
 // To upload an image to cloudinary
 export const uploadToCloudinary = async (fileBuffer) => {
-  new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       { folder: "polling-app" },
       (err, result) => (err ? reject(err) : resolve(result.secure_url)),

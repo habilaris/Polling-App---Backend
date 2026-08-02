@@ -6,17 +6,17 @@ import { shapePoll } from "../utils/pollShape.js";
 import { withCounts } from "../utils/counts.js";
 import { uploadToCloudinary } from "../config/cloudinary.js";
 
-const POP = ["creator", "name username avatar"];
+const POP = [{ path: "creator", select: "name username avatar" }];
 
 //  To bookmark id-set for  logged in users
-const bookmarkSet = async (userId) => {
+export const bookmarkSet = async (userId) => {
   // Selects helps you retrieve the user object with only the necessary field you need to work on
   const me = await User.findById(userId).select("bookmarks");
   return new Set((me?.bookmarks || []).map(String));
 };
 
 // To create a poll
-const createPoll = async (req, res) => {
+export const createPoll = async (req, res) => {
   try {
     const { question, type, category } = req.body;
     if (!question || !type) {
@@ -61,7 +61,7 @@ const createPoll = async (req, res) => {
 };
 
 // Shared list as a helper function for voted mine feed
-const sendList = async (req, res, filter) => {
+export const sendList = async (req, res, filter) => {
   const polls = await Poll.find(filter).populate(POP).sort({ createdAt: -1 });
 
   const set = await bookmarkSet(req.userId);
@@ -136,11 +136,12 @@ export const getTrending = async (req, res) => {
   try {
     const types = ["single", "yesno", "rating", "image", "open"];
     const counts = await Promise.all(
-      types.map(async (type) => Poll.countDocuments({ type: t })),
+      types.map(async (type) => Poll.countDocuments({ type })),
     );
-    res.json(type.map((t, i) => ({ type: t, count: counts[i] })));
+    res.json(types.map((type, i) => ({ type, count: counts[i] })));
   } catch (error) {
     console.log("Error in get trending in poll controller: " + error);
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -183,6 +184,24 @@ export const getPollStats = async (req, res) => {
     const comments = await Comment.countDocuments({ poll: poll._id });
 
     res.json({ poll: shaped, comments });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const cleanUpGhostPolls = async (req, res) => {
+  try {
+    const allPolls = await Poll.find();
+    let deleted = 0;
+
+    for (const poll of allPolls) {
+      const user = await User.findById(poll.creator);
+      if (!user) {
+        await Poll.findByIdAndDelete(poll._id);
+        deleted++;
+      }
+    }
+    res.status(200).json({ message: `Cleaned up ${deleted} ghost polls!` });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
