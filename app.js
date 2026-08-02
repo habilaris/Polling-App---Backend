@@ -1,5 +1,4 @@
 import express from "express";
-import User from "./models/User.js";
 import authRouter from "./routes/authRoutes.js";
 import notificationRouter from "./routes/notificationRoutes.js";
 import pollRouter from "./routes/pollRoutes.js";

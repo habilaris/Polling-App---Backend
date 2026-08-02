@@ -1,5 +1,5 @@
-import User from "../models/User.js";
-import Poll from "../models/Poll.js";
+import User from "../models/user.js";
+import Poll from "../models/poll.js";
 import { withCounts } from "../utils/counts.js";
 import { shapePoll } from "../utils/pollShape.js";
 

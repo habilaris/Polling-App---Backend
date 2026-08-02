@@ -1,4 +1,4 @@
-import User from "../models/User.js";
+import User from "../models/user.js";
 import Comment from "../models/comment.js";
 
 // Function to count comments and saves for given poll IDs
