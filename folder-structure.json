@@ -1,0 +1,221 @@
+{
+  "name": "backend",
+  "path": "e:\\SMIT Bootcamp and Internship 2026\\Class 1 Task\\Project - Clone of a Polling App\\backend",
+  "type": "directory",
+  "children": [
+    {
+      "name": "api",
+      "type": "folder",
+      "icon": "📁"
+    },
+    {
+      "name": "config",
+      "type": "folder",
+      "icon": "📁",
+      "children": [
+        {
+          "name": "cloudinary.js",
+          "type": "file",
+          "icon": "📜"
+        },
+        {
+          "name": "connectToDB.js",
+          "type": "file",
+          "icon": "📜"
+        },
+        {
+          "name": "loadEnv.js",
+          "type": "file",
+          "icon": "📜"
+        },
+        {
+          "name": "mailer.js",
+          "type": "file",
+          "icon": "📜"
+        }
+      ]
+    },
+    {
+      "name": "controllers",
+      "type": "folder",
+      "icon": "📁",
+      "children": [
+        {
+          "name": "authController.js",
+          "type": "file",
+          "icon": "📜"
+        },
+        {
+          "name": "commentController.js",
+          "type": "file",
+          "icon": "📜"
+        },
+        {
+          "name": "notificationController.js",
+          "type": "file",
+          "icon": "📜"
+        },
+        {
+          "name": "passwordController.js",
+          "type": "file",
+          "icon": "📜"
+        },
+        {
+          "name": "pollController.js",
+          "type": "file",
+          "icon": "📜"
+        },
+        {
+          "name": "userController.js",
+          "type": "file",
+          "icon": "📜"
+        },
+        {
+          "name": "voteController.js",
+          "type": "file",
+          "icon": "📜"
+        }
+      ]
+    },
+    {
+      "name": "middleware",
+      "type": "folder",
+      "icon": "📁",
+      "children": [
+        {
+          "name": "auth.js",
+          "type": "file",
+          "icon": "📜"
+        },
+        {
+          "name": "logger.js",
+          "type": "file",
+          "icon": "📜"
+        }
+      ]
+    },
+    {
+      "name": "models",
+      "type": "folder",
+      "icon": "📁",
+      "children": [
+        {
+          "name": "comment.js",
+          "type": "file",
+          "icon": "📜"
+        },
+        {
+          "name": "notification.js",
+          "type": "file",
+          "icon": "📜"
+        },
+        {
+          "name": "poll.js",
+          "type": "file",
+          "icon": "📜"
+        },
+        {
+          "name": "user.js",
+          "type": "file",
+          "icon": "📜"
+        }
+      ]
+    },
+    {
+      "name": "routes",
+      "type": "folder",
+      "icon": "📁",
+      "children": [
+        {
+          "name": "authRoutes.js",
+          "type": "file",
+          "icon": "📜"
+        },
+        {
+          "name": "commentRoutes.js",
+          "type": "file",
+          "icon": "📜"
+        },
+        {
+          "name": "notificationRoutes.js",
+          "type": "file",
+          "icon": "📜"
+        },
+        {
+          "name": "pollRoutes.js",
+          "type": "file",
+          "icon": "📜"
+        },
+        {
+          "name": "userRoutes.js",
+          "type": "file",
+          "icon": "📜"
+        }
+      ]
+    },
+    {
+      "name": "utils",
+      "type": "folder",
+      "icon": "📁",
+      "children": [
+        {
+          "name": "counts.js",
+          "type": "file",
+          "icon": "📜"
+        },
+        {
+          "name": "otp.js",
+          "type": "file",
+          "icon": "📜"
+        },
+        {
+          "name": "pollShape.js",
+          "type": "file",
+          "icon": "📜"
+        }
+      ]
+    },
+    {
+      "name": ".gitignore",
+      "type": "file",
+      "icon": "📁"
+    },
+    {
+      "name": "API_DOCUMENTATION.md",
+      "type": "file",
+      "icon": "📝"
+    },
+    {
+      "name": "app.js",
+      "type": "file",
+      "icon": "📜"
+    },
+    {
+      "name": "package-lock.json",
+      "type": "file",
+      "icon": "⚙️"
+    },
+    {
+      "name": "package.json",
+      "type": "file",
+      "icon": "📦"
+    },
+    {
+      "name": "server.js",
+      "type": "file",
+      "icon": "📜"
+    },
+    {
+      "name": "vercel.json",
+      "type": "file",
+      "icon": "⚙️"
+    }
+  ],
+  "metadata": {
+    "generated": "2026-08-04T22:03:05.564Z",
+    "generator": "FileTree Pro Extension",
+    "version": "0.2.0",
+    "showIcons": true,
+    "maxDepth": 15
+  }
+}
