@@ -1,11 +1,11 @@
+import "./config/loadEnv.js"; // must be first
 import express from "express";
-import dotenv from "dotenv";
 import connectToDB from "./config/connectToDB.js";
 import routes from "./app.js";
 import cors from "cors";
 import logger from "./middleware/logger.js";
 
-dotenv.config({ quiet: true });
+// dotenv.config() call removed from here — already loaded above
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -76,7 +76,9 @@ app.use("/api/", routes);
 
 // Error handling for undefined routes
 app.use((req, res) => {
-  res.status(404).json({ message: `No route found at ${req.originalUrl}` });
+  res.status(404).json({
+    message: `No route found at ${req.method} ${req.originalUrl}`,
+  });
 });
 
 if (!process.env.VERCEL) {

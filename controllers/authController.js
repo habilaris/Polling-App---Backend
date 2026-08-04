@@ -174,7 +174,8 @@ export const updateProfile = async (req, res) => {
   try {
     const { name, username, bio } = req.body;
     const user = await User.findById(req.userId);
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user)
+      return res.status(404).json({ message: "User not found/Unauthorized" });
 
     if (username && username !== user.username) {
       const taken = await User.findOne({ username });
@@ -250,6 +251,7 @@ export const changePassword = async (req, res) => {
 export const deleteAccount = async (req, res) => {
   try {
     const id = req.userId;
+
     const myPolls = await Poll.find({ creator: id }).select("_id");
     const pollIds = myPolls.map((poll) => poll._id);
 

@@ -25,7 +25,7 @@ export const addComment = async (req, res) => {
     const comment = await Comment.create({
       poll: req.params.pollId,
       user: req.userId,
-      parent: req.body.parent || null,
+      parentComment: req.body.parentComment || null,
       text,
     });
 
