@@ -1,30 +1,16 @@
 import mongoose from "mongoose";
-import dotenv from "dotenv";
 
-dotenv.config({ quiet: true });
+let isConnected = false;
 
 const connectToDB = async () => {
-  if (mongoose.connections[0]?.readyState === 1) {
-    return;
-  }
-
-  if (!process.env.DB_URL) {
-    console.warn(
-      "DB_URL is not configured. Database-backed routes will return errors until it is set.",
-    );
-    return;
-  }
+  if (isConnected) return;
 
   try {
-    await mongoose.connect(process.env.DB_URL, {
-      serverSelectionTimeoutMS: 10000,
-    });
-    console.log("Connected to MongoDB");
+    const db = await mongoose.connect(process.env.MONGO_URI);
+    isConnected = db.connections[0].readyState === 1;
+    console.log("MongoDB connected");
   } catch (error) {
-    console.error("Error connecting to MongoDB:", error);
-    if (!process.env.VERCEL) {
-      process.exit(1);
-    }
+    console.error("MongoDB connection error:", error);
   }
 };
 
