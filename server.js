@@ -54,25 +54,16 @@ connectToDB();
 app.get("/", (req, res) => {
   res.json({
     message: "Polling API is running",
-    docs: "/api",
+    docs: "/root",
   });
 });
 
+// Route handling for API routes
 app.get("/health", (req, res) => {
   res.json({ ok: true, service: "polling-api" });
 });
 
-// Route handling for API routes
-app.get("/api", (req, res) => {
-  res.json({
-    message: "Polling API is running",
-    docs: "/api",
-  });
-});
-app.get("/api/health", (req, res) => {
-  res.json({ ok: true, service: "polling-api" });
-});
-app.use("/api/", routes);
+app.use("/api", routes);
 
 // Error handling for undefined routes
 app.use((req, res) => {
