@@ -15,6 +15,10 @@ router.get("/", (req, res) => {
   res.send("Hello from the backend API!");
 });
 
+app.get("/health", (req, res) => {
+  res.json({ ok: true, service: "polling-api" });
+});
+
 router.use("/auth", authRouter);
 router.use("/polls", pollRouter);
 router.use("/comments", commentRouter);
