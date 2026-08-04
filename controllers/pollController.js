@@ -95,7 +95,7 @@ export const listPolls = async (req, res) => {
 // To get your own polls
 export const getMyPolls = async (req, res) => {
   try {
-    await sendList({ creator: req.userId }, req, res);
+    await sendList(req, res, { creator: req.userId });
   } catch (error) {
     console.log("Error in getMyPolls in poll controller: ", error);
   }
